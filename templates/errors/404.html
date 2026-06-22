@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}FindMyDos - עמוד לא נמצא{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4">404</h1>
+            <p class="lead">העמוד المطلوب לא נמצא</p>
+            <p>העמוד שאליו ניסית לגשת לא קיים או הועבר.</p>
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary">חזרה לדף הבית</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

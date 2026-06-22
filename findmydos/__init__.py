@@ -1,0 +1,3 @@
+"""
+FindMyDos package initializer.
+"""

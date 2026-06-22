@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}FindMyDos - מפת הפגנות{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="mb-4">מפת הפגנות חרדיות</h1>
+        <p class="text-muted">
+            מציג את כל ההפגנות שזוהו במערכת
+        </p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="map-container" id="protests-map">
+            <!-- Map will be loaded here by JavaScript -->
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize map with all protests
+    document.addEventListener('DOMContentLoaded', function() {
+        // Center map on Israel
+        const map = L.map('protests-map').setView([31.5, 34.75], 8);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Add markers for each protest
+        const protests = {{ protests|tojson }};
+
+        protests.forEach(function(protest) {
+            if (protest.location_latitude && protest.location_longitude) {
+                const marker = L.marker([protest.location_latitude, protest.location_longitude]).addTo(map);
+
+                let popupContent = `<b>${protest.location_name}</b><br>`;
+                popupContent += `<strong>${protest.title}</strong><br>`;
+                if (protest.affects_major_road) {
+                    popupContent += `<span style="background: #fd7e14; color: white; padding: 2px 6px; border-radius: 3px; font-size: 0.8em;">${protest.major_road_description}</span><br>`;
+                }
+                popupContent += `<small>זוהה: ${new Date(protest.detected_at).toLocaleString()}</small>`;
+
+                marker.bindPopup(popupContent);
+            }
+        });
+    });
+</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-sA+e2e1b0r3e5q8y3Zp6lXKjK4VvVN7ekqj2bQVNbcWcY="
+      crossorigin=""/>
+{% endblock %}

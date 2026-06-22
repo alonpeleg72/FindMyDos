@@ -1,0 +1,20 @@
+# FindMyDos Docker Compose file
+
+version: '3.8'
+
+services:
+  findmydos:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+      - findmydos_data:/app/instance
+    environment:
+      - FLASK_ENV=development
+      - SECRET_KEY=dev-key-change-in-production-in-compose
+      - DATABASE_URL=sqlite:///findmydos.db
+    restart: unless-stopped
+
+volumes:
+  findmydos_data:

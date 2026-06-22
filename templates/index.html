@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}FindMyDos - הפגנות חרדיות עדכניות{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="mb-4">הפגנות חרדיות עדכניות</h1>
+        <p class="text-muted">
+            מעודכן לאחרון: {{ protests[0].detected_at.strftime('%d/%m/%Y %H:%M') if protests else 'אין נתונים' }}
+        </p>
+
+        {% if protests %}
+            <div class="list-group">
+                {% for protest in protests %}
+                <div class="list-group-item protest-card {% if protest.affects_major_road %}affects-road{% endif %}">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ protest.title }}</h5>
+                        <small class="text-muted">{{ protest.detected_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                    </div>
+                    <p class="mb-1">{{ protest.location_name }}</p>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="road-indicator {% if protest.affects_major_road %}yes{% else %}no{% endif %}">
+                            {{ protest.major_road_description or 'לא משפיע על כבישים ראשיים' }}
+                        </span>
+                        <a href="{{ url_for('main.protest_detail', protest_id=protest.id) }}" class="btn btn-sm btn-outline-primary">
+                            פרטים
+                        </a>
+                    </div>
+
+                    {% if protest.source_url %}
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            מקור: <a href="{{ protest.source_url }}" target="_blank">{{ protest.source_title or protest.source_url }}</a>
+                        </small>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            {# Pagination controls would go here #}
+        {% else %}
+            <div class="alert alert-info">
+                אין הפגנות חרדיות מוצגות כרגע. המערכת סורקת מקורות מידע באופן תקופתי.
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
