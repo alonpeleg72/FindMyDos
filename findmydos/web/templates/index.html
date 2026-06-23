@@ -7,7 +7,7 @@
     <div class="col-md-12">
         <h1 class="mb-4">הפגנות חרדיות עדכניות</h1>
         <p class="text-muted">
-            מעודכן לאחרון: {% if protests %}{{ protests[0].detected_at.strftime('%d/%m/%Y %H:%M') }}{% else %}אין נתונים{% endif %}
+            מעודכן לאחרון: {% if protests %}{{ protests[0].detected_at }}{% else %}אין נתונים{% endif %}
         </p>
 
         {% if protests %}
@@ -16,7 +16,7 @@
                 <div class="list-group-item protest-card {% if protest.affects_major_road %}affects-road{% endif %}">
                     <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">{{ protest.title }}</h5>
-                        <small class="text-muted">{{ protest.detected_at.strftime('%d/%m/%Y %H:%M') }}</small>
+                        <small class="text-muted">{{ protest.detected_at }}</small>
                     </div>
                     <p class="mb-1">{{ protest.location_name }}</p>
 

@@ -38,13 +38,13 @@
                 </a>
             </p>
             <small class="text-muted">
-                פורסם במקור: {{ protest.published_at.strftime('%d/%m/%Y %H:%M') if protest.published_at else 'לא צוין' }}
+                פורסם במקור: {{ protest.published_at if protest.published_at else 'לא צוין' }}
             </small>
         </div>
         {% endif %}
 
         <div class="mb-4">
-            <p><strong>זמן זיהוי:</strong> {{ protest.detected_at.strftime('%d/%m/%Y %H:%M') }}</p>
+            <p><strong>זמן זיהוי:</strong> {{ protest.detected_at }}</p>
             <p><strong>שפה זוהתה:</strong> {% if protest.is_hebrew %}עברית{% else %}לא עברית{% endif %}</p>
         </div>
     </div>

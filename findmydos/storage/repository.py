@@ -48,7 +48,7 @@ class ProtestRepository:
         finally:
             session.close()
 
-    def get_by_id(self, protest_id: int) -> Optional[Protest]:
+    def get_by_id(self, protest_id: int) -> Optional[dict]:
         """
         Get a protest by its ID.
 
@@ -56,15 +56,16 @@ class ProtestRepository:
             protest_id: ID of the protest to retrieve
 
         Returns:
-            Protest: The protest object if found, None otherwise
+            dict: Protest data as a dict if found, None otherwise
         """
         session = self.get_session()
         try:
-            return session.query(Protest).filter(Protest.id == protest_id).first()
+            protest = session.query(Protest).filter(Protest.id == protest_id).first()
+            return protest.to_dict() if protest else None
         finally:
             session.close()
 
-    def get_recent(self, limit: int = 20, offset: int = 0) -> List[Protest]:
+    def get_recent(self, limit: int = 20, offset: int = 0) -> List[dict]:
         """
         Get recent protests ordered by detection time.
 
@@ -73,30 +74,35 @@ class ProtestRepository:
             offset: Number of protests to skip
 
         Returns:
-            List[Protest]: List of protest objects
+            List[dict]: List of protest dicts
         """
         session = self.get_session()
         try:
-            return session.query(Protest)\
+            protests = session.query(Protest)\
                 .order_by(desc(Protest.detected_at))\
                 .limit(limit)\
                 .offset(offset)\
                 .all()
+            return [p.to_dict() for p in protests]
         finally:
             session.close()
 
-    def get_all(self) -> List[Protest]:
+    def get_all(self) -> List[dict]:
         """
         Get all protests ordered by detection time.
 
+        Args:
+            None
+
         Returns:
-            List[Protest]: List of all protest objects
+            List[dict]: List of all protest dicts
         """
         session = self.get_session()
         try:
-            return session.query(Protest)\
+            protests = session.query(Protest)\
                 .order_by(desc(Protest.detected_at))\
                 .all()
+            return [p.to_dict() for p in protests]
         finally:
             session.close()
 
@@ -106,7 +112,7 @@ class ProtestRepository:
         longitude: float,
         radius_km: float = 1.0,
         hours: int = 24
-    ) -> List[Protest]:
+    ) -> List[dict]:
         """
         Get protests near a specific location within a time window.
         Used for duplicate detection.
@@ -118,7 +124,7 @@ class ProtestRepository:
             hours: How many hours back to look
 
         Returns:
-            List[Protest]: List of protests near the location
+            List[dict]: List of protest dicts near the location
         """
         from datetime import datetime, timedelta
 
@@ -132,7 +138,8 @@ class ProtestRepository:
                 .filter(Protest.detected_at >= time_threshold)\
                 .all()
 
-            # Filter by proximity (Haversine formula)
+            # Filter by proximity (Haversine formula) and convert to dicts
+            # while the session is still open
             nearby_protests = []
             for protest in protests:
                 if protest.location_latitude is not None and protest.location_longitude is not None:
@@ -141,7 +148,7 @@ class ProtestRepository:
                         protest.location_latitude, protest.location_longitude
                     )
                     if distance <= radius_km:
-                        nearby_protests.append(protest)
+                        nearby_protests.append(protest.to_dict())
 
             return nearby_protests
         finally:

@@ -2,6 +2,8 @@
 Flask application factory and configuration.
 """
 
+from datetime import datetime
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -22,7 +24,11 @@ def create_app(config_name=None):
     Returns:
         Flask: Configured Flask application instance
     """
-    app = Flask(__name__, instance_relative_config=False, template_folder="templates")
+    template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "templates")
+    app = Flask(__name__, instance_relative_config=False, template_folder=template_dir)
+
+    # Make `now()` available inside Jinja templates
+    app.jinja_env.globals["now"] = datetime.now
 
     # Load configuration
     config_name = config_name or os.environ.get('FLASK_ENV', 'default')

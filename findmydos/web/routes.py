@@ -28,16 +28,7 @@ def index():
 
     protests = protest_repo.get_recent(limit=limit, offset=offset)
 
-    try:
-        return render_template("index.html", protests=protests)
-    except Exception as e:
-        import traceback
-        return f"<pre>Error rendering template: {str(e)}
-{traceback.format_exc()}</pre>"
-{traceback.format_exc()}</pre>"
-{traceback.format_exc()}</pre>"
-{traceback.format_exc()}</pre>"
-{traceback.format_exc()}</pre>"
+    return render_template("index.html", protests=protests)
 
 @bp.route('/protest/<int:protest_id>')
 def protest_detail(protest_id):
@@ -68,7 +59,7 @@ def api_protests():
 
     protests = protest_repo.get_recent(limit=limit, offset=offset)
 
-    return jsonify([protest.to_dict() for protest in protests])
+    return jsonify(protests)
 
 @bp.route('/map')
 def map_view():

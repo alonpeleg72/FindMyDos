@@ -48,7 +48,7 @@ def get_session_factory():
         sessionmaker: SQLAlchemy session factory
     """
     engine = get_engine()
-    return sessionmaker(bind=engine)
+    return sessionmaker(bind=engine, expire_on_commit=False)
 
 def get_scoped_session():
     """
