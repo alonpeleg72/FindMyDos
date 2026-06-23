@@ -5,7 +5,7 @@ Main entry point for the application.
 """
 
 import os
-from web.app import create_app
+from findmydos.web.app import create_app
 
 def main():
     """Main application entry point."""
