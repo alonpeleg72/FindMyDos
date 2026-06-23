@@ -15,6 +15,7 @@ protest_repo = ProtestRepository()
 
 @bp.route('/')
 def index():
+    print("Index route called!")
     """
     Main page showing recent protests.
 
@@ -27,7 +28,16 @@ def index():
 
     protests = protest_repo.get_recent(limit=limit, offset=offset)
 
-    return render_template('index.html', protests=protests)
+    try:
+        return render_template("index.html", protests=protests)
+    except Exception as e:
+        import traceback
+        return f"<pre>Error rendering template: {str(e)}
+{traceback.format_exc()}</pre>"
+{traceback.format_exc()}</pre>"
+{traceback.format_exc()}</pre>"
+{traceback.format_exc()}</pre>"
+{traceback.format_exc()}</pre>"
 
 @bp.route('/protest/<int:protest_id>')
 def protest_detail(protest_id):

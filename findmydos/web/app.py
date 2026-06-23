@@ -22,7 +22,7 @@ def create_app(config_name=None):
     Returns:
         Flask: Configured Flask application instance
     """
-    app = Flask(__name__, instance_relative_config=False)
+    app = Flask(__name__, instance_relative_config=False, template_folder="templates")
 
     # Load configuration
     config_name = config_name or os.environ.get('FLASK_ENV', 'default')
@@ -38,6 +38,7 @@ def create_app(config_name=None):
 
     # Create database tables if they don't exist
     with app.app_context():
-        db.create_all()
+        from findmydos.storage.database import init_db
+        init_db()
 
     return app
